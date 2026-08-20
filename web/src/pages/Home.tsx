@@ -36,6 +36,7 @@ export function HomePage() {
   return (
     <section>
       <h1>{t.home}</h1>
+      <p>Hello World</p>
       <form className="row" onSubmit={onAdd}>
         <label htmlFor="media-title">{t.title}</label>
         <input id="media-title" value={title} onChange={(e) => setTitle(e.target.value)} required />
