@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./baseTest";
 import { DEMO_EMAIL, DEMO_PASSWORD, login } from "./helpers";
 
 test.describe("auth", () => {
