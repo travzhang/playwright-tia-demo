@@ -1,8 +1,8 @@
-import { expect, test } from "./baseTest";
+import { caseId, expect, test } from "./baseTest";
 import { login } from "./helpers";
 
 test.describe("settings", () => {
-  test("changes theme, language, and logs out", async ({ page }) => {
+  test("changes theme, language, and logs out", caseId("settings-001"), async ({ page }) => {
     await login(page);
     await page.getByRole("link", { name: "Settings" }).click();
     await expect(page.getByRole("heading", { name: "Settings" })).toBeVisible();
