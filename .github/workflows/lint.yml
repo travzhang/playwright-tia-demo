@@ -1,4 +1,4 @@
-name: Lint and Format
+name: Lint, Format, Typecheck
 
 on:
   push:
@@ -44,3 +44,9 @@ jobs:
 
       - name: Format api
         run: pnpm --filter api format:check
+
+      - name: Typecheck web
+        run: pnpm --filter web typecheck
+
+      - name: Typecheck api
+        run: pnpm --filter api typecheck
