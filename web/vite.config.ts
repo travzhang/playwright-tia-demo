@@ -4,8 +4,11 @@ import istanbul from "vite-plugin-istanbul";
 
 // https://vite.dev/config/
 export default defineConfig({
-  // @ts-ignore
-  plugins: [react(),istanbul({
-    forceBuildInstrument: true,
-  })],
+  plugins: [
+    react(),
+    // @ts-ignore
+    istanbul({
+      forceBuildInstrument: true,
+    }),
+  ],
 });
