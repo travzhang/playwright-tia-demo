@@ -1,4 +1,4 @@
-name: Lint
+name: Lint and Format
 
 on:
   push:
@@ -38,3 +38,9 @@ jobs:
 
       - name: Lint api
         run: pnpm --filter api lint
+
+      - name: Format web
+        run: pnpm --filter web format:check
+
+      - name: Format api
+        run: pnpm --filter api format:check

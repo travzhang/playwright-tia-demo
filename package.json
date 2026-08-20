@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "pnpm -r --if-present run lint",
+    "format": "pnpm -r --if-present run format",
+    "format:check": "pnpm -r --if-present run format:check",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
