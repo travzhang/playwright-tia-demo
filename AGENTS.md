@@ -17,3 +17,5 @@ pnpm typecheck
 ```
 
 Fix failures and re-run. Skip this loop for docs-only or workflow-only edits.
+
+After web UI changes, also run `pnpm test` from the repo root. It builds `web`, serves `dist` with `vite preview`, then runs Playwright against that production bundle.

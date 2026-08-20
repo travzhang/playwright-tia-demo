@@ -83,3 +83,8 @@ next-env.d.ts
 .swc
 
 !/app/src/api/**/coverage
+
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
