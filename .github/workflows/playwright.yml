@@ -11,6 +11,7 @@ concurrency:
 
 permissions:
   contents: read
+  actions: read
 
 jobs:
   e2e:
@@ -19,6 +20,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -34,16 +37,70 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Fetch base branch
+        if: github.event_name == 'pull_request'
+        run: git fetch origin "${{ github.base_ref }}"
+
+      - name: Download TIA map from main
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p .tia-baseline
+          RUN_ID=$(gh run list --repo "${{ github.repository }}" --branch main --workflow playwright.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+          if [ -z "$RUN_ID" ]; then
+            echo "No successful Playwright run on main yet"
+            exit 0
+          fi
+          gh run download "$RUN_ID" --repo "${{ github.repository }}" --name tia-map --dir .tia-baseline
+
+      - name: Select TIA cases
+        id: tia
+        if: github.event_name == 'pull_request'
+        env:
+          TIA_BASELINE: .tia-baseline/tia.json
+          TIA_BASE_REF: origin/${{ github.base_ref }}
+        run: node scripts/select-tia-cases.mjs
+
+      - name: Upload TIA selection
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: tia-selection
+          path: tia-selected.json
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Install Playwright Chromium
+        if: github.event_name != 'pull_request' || steps.tia.outputs.mode != 'skip'
         run: pnpm exec playwright install --with-deps chromium
 
-      - name: Run Playwright
+      - name: Run Playwright (full)
+        if: github.event_name != 'pull_request' || steps.tia.outputs.mode == 'all'
         run: pnpm test
 
-      - name: Upload report
+      - name: Run Playwright (selected)
+        if: github.event_name == 'pull_request' && steps.tia.outputs.mode == 'filter'
+        run: pnpm exec playwright test --grep "${{ steps.tia.outputs.grep }}"
+
+      - name: Skip Playwright
+        if: github.event_name == 'pull_request' && steps.tia.outputs.mode == 'skip'
+        run: echo "No impacted e2e cases"
+
+      - name: Upload Playwright report
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Upload TIA map
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tia-map
+          path: .canyon_output/tia.json
+          retention-days: 30

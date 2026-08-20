@@ -5,7 +5,10 @@ import { createCoverageContextFixture } from "@canyonjs/playwright";
 import { OUTPUT_DIR, writeCaseAnalysis } from "./analyzeCoverage";
 
 export function caseId(id: string) {
-  return { annotation: { type: "caseId" as const, description: id } };
+  return {
+    annotation: { type: "caseId" as const, description: id },
+    tag: `@${id}`,
+  };
 }
 
 function requireCaseId(testInfo: TestInfo) {

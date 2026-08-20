@@ -88,3 +88,5 @@ test-results/
 playwright-report/
 blob-report/
 playwright/.cache/
+tia-selected.json
+.tia-baseline/

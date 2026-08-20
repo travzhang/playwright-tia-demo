@@ -11,7 +11,8 @@
     "format": "pnpm -r --if-present run format",
     "format:check": "pnpm -r --if-present run format:check",
     "typecheck": "pnpm -r --if-present run typecheck",
-    "test": "playwright test"
+    "test": "playwright test",
+    "tia:select": "node scripts/select-tia-cases.mjs"
   },
   "devDependencies": {
     "@canyonjs/playwright": "^0.0.2",
