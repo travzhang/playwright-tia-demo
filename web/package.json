@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "format": "oxfmt",
     "format:check": "oxfmt --check",
+    "typecheck": "tsc -b",
     "preview": "vite preview"
   },
   "dependencies": {
