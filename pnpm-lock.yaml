@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@canyonjs/playwright':
+        specifier: ^0.0.2
+        version: 0.0.2
       '@playwright/test':
         specifier: 1.56.1
         version: 1.56.1
@@ -75,6 +78,9 @@ importers:
         version: 8.2.2(@types/node@24.13.3)(esbuild@0.28.2)(tsx@4.23.12)
 
 packages:
+
+  '@canyonjs/playwright@0.0.2':
+    resolution: {integrity: sha512-g/DsdU/m+lKdoXhZFl4RYaLRfzn41ijG4RFSO2g8tbzfHXhPG1qxmuCst+fle/Ajn+BDInUs9neg88GQG8LpCw==}
 
   '@esbuild/aix-ppc64@0.28.2':
     resolution: {integrity: sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ==}
@@ -946,6 +952,8 @@ packages:
         optional: true
 
 snapshots:
+
+  '@canyonjs/playwright@0.0.2': {}
 
   '@esbuild/aix-ppc64@0.28.2':
     optional: true
