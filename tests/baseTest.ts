@@ -2,8 +2,7 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import { test as baseTest, type TestInfo } from "@playwright/test";
 import { createCoverageContextFixture } from "@canyonjs/playwright";
-
-const OUTPUT_DIR = ".canyon_output";
+import { OUTPUT_DIR, writeCaseAnalysis } from "./analyzeCoverage";
 
 export function caseId(id: string) {
   return { annotation: { type: "caseId" as const, description: id } };
@@ -28,11 +27,17 @@ async function persistCaseCoverage(testInfo: TestInfo, tmpDir: string) {
   const coverageFiles = files
     .filter((file) => file.startsWith("coverage-") && file.endsWith(".json"))
     .sort();
+  const coverageFile = path.join(destDir, "coverage-final.json");
   if (coverageFiles.length > 0) {
     await fs.promises.copyFile(
       path.join(tmpDir, coverageFiles[coverageFiles.length - 1]),
-      path.join(destDir, "coverage-final.json"),
+      coverageFile,
     );
+    const coverage = JSON.parse(await fs.promises.readFile(coverageFile, "utf8")) as Record<
+      string,
+      { path?: string; s?: Record<string, number> }
+    >;
+    writeCaseAnalysis(destDir, id, coverage);
   }
 
   await fs.promises.writeFile(
@@ -45,7 +50,8 @@ async function persistCaseCoverage(testInfo: TestInfo, tmpDir: string) {
         file: path.relative(process.cwd(), testInfo.file),
         project: testInfo.project.name,
         status: testInfo.status,
-        coverageFile: path.join(destDir, "coverage-final.json"),
+        coverageFile,
+        analysisFile: path.join(destDir, "analysis.json"),
       },
       null,
       2,
